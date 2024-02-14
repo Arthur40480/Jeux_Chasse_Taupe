@@ -25,18 +25,57 @@ body {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 100px;
+    gap: 50px;
     height: 700px;
-    width: 900px;
+    width: 990px;
     background: linear-gradient(135deg, #e6efff, #f9eae1);
-    margin-top: 20px;
-    padding: 20px;
+    margin-top: 40px;
+    padding: 80px;
 }
 
 .mole-hole {
+    position: relative;
     background-color: #1e90ff; 
     border-radius: 50%;
     box-shadow: inset 0 10px 0 7px rgb(53, 21, 6),
                 inset 0 20px 20px 15px rgb(0, 0, 0, .3),
                 0 0 5px rgb(0, 0, 0, .5);
+    overflow: hidden;
+}
+
+.mole-hole .dev {
+    width: 70%;
+    height: 100%;
+    position: absolute;
+    bottom: -7px;
+    left: 110px;
+    transform: translate(-50%);
+    animation: appear 0.3s ease-out;
+    
+}
+
+@keyframes appear {
+    0% {
+        transform: translate(-50%) translateY(100%);
+    }
+    100% {
+        transform: translate(-50%) translateY(0%);
+    }
+}
+
+.cursor-hammer {
+    height: 200px;
+    width: 180px;
+    position: absolute;
+    top: 80px;
+    left: 100px;
+    background-image: url(assets/hammer.png);
+    background-size: 100% 100%;
+    transform: translate(-20%, 20%);
+    transition: transform .1s;
+    z-index: 999;
+}
+
+.cursor-hammer.active {
+    transform: translate(-20%, 20%) rotate(-45deg);
 }
