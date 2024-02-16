@@ -1,12 +1,13 @@
-const overlayElt = document.querySelector('.full-screen-overlay'); // Full screen
-const gameBoardElt = document.querySelector('.game-board'); // Plateau de jeux
-const cursorHammerElt = document.querySelector('.cursor-hammer');  // Le marteau
-const holesElt = [...document.querySelectorAll('.mole-hole')]; // Les trous
-const soundSmashElt = document.querySelector('.sound-smash'); // Le son du smash
+const overlayElt = document.querySelector('.full-screen-overlay');           // Full screen
+const overlayImgElt = document.querySelector('.overlay-img');               // Image du full screen
+const gameBoardElt = document.querySelector('.game-board');                // Plateau de jeux
+const cursorHammerElt = document.querySelector('.cursor-hammer');         // Le marteau
+const holesElt = [...document.querySelectorAll('.mole-hole')];           // Les trous
+const soundSmashElt = document.querySelector('.sound-smash');           // Le son du smash
 const soundExplosionElt = document.querySelector('.sound-explosion'); // Le son de l'explosion
-const musicElt = document.querySelector('.background-music') // Musique de fond
-const scoreElt = document.querySelector('.score-container span'); // Le score
-const errorElt = document.querySelector('.cross-container'); // Les erreurs
+const musicElt = document.querySelector('.background-music')         // Musique de fond
+const scoreElt = document.querySelector('.score-container span');   // Le score
+const errorElt = document.querySelector('.cross-container');       // Les erreurs
 
 let score = 0;
 let error = 0;
@@ -27,6 +28,17 @@ window.addEventListener('mouseup', () => {
 });
 
 document.addEventListener('click', (event) => {
+    if(error >= 4) {
+        overlayImgElt.style.objectFit = 'contain';
+        overlayImgElt.src = 'assets/loose.jpg';
+        overlayElt.style.display = 'block'; 
+        musicElt.src = 'assets/looseSound.mp3';
+        musicElt.play();
+        setTimeout(() => {
+            musicElt.src = 'assets/panic.mp3';
+            restartGame();
+        }, 3000)
+    }
     if (holesElt.includes(event.target) || event.target == gameBoardElt) {
         error ++;
         const imgElt = document.createElement('img');
@@ -59,7 +71,7 @@ function increaseScore() {
  * Fonction qui permet d'afficher un dev aléatoire dans un trou aléatoire
  */
 function showDev() {
-    // musicElt.play();
+    musicElt.play();
     let randomHoleNumber = getRandomHoleNumber();   // Le numéro du trou concerné
     const devNumber = Math.floor(Math.random() * 3) + 1; // Le numéro de la photo concernée
     const hole = holesElt[randomHoleNumber]; // Le trou concerné
@@ -120,6 +132,8 @@ function showBomb () {
     occupiedHoles.push(randomHoleNumber);   // Ajoute le trou occupé au tableau
 
     imgElt.addEventListener('click', () => {
+        overlayImgElt.style.objectFit = 'cover';
+        overlayImgElt.src = 'assets/explosionImg.jpg';
         overlayElt.style.display = 'block'; 
         soundExplosionElt.play(); 
         setTimeout(() => {
