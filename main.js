@@ -10,6 +10,7 @@ const errorElt = document.querySelector('.cross-container'); // Les erreurs
 
 let score = 0;
 let error = 0;
+let occupiedHoles = []; // Tableau des trous occupés
 
 // Evenements
 window.addEventListener('mousemove', e => {
@@ -28,7 +29,6 @@ window.addEventListener('mouseup', () => {
 document.addEventListener('click', (event) => {
     if (holesElt.includes(event.target) || event.target == gameBoardElt) {
         error ++;
-        scoreElt.textContent = score;
         const imgElt = document.createElement('img');
         imgElt.src = 'assets/cross.webp';
         errorElt.appendChild(imgElt);
@@ -36,83 +36,105 @@ document.addEventListener('click', (event) => {
 });
 
 /**
+ * Fonction qui renvoie un numéro de trou aléatoire après avoir vérifié qu'il ne soit pas dans le tableau des trous occupés
+ * @returns number
+ */
+function getRandomHoleNumber() {
+    let randomHoleNumber = Math.floor(Math.random() * holesElt.length);
+    while(occupiedHoles.includes(randomHoleNumber)) {
+        randomHoleNumber = Math.floor(Math.random() * holesElt.length);
+    }
+    return randomHoleNumber;
+};
+
+/**
+ * Fonction qui incrémente le score
+ */
+function increaseScore() {
+    score += 1;
+    scoreElt.textContent = score;
+}
+
+/**
  * Fonction qui permet d'afficher un dev aléatoire dans un trou aléatoire
  */
 function showDev() {
     // musicElt.play();
-    const holeNumber = Math.floor(Math.random() * holesElt.length); // Le numéro du trou concerné
+    let randomHoleNumber = getRandomHoleNumber();   // Le numéro du trou concerné
     const devNumber = Math.floor(Math.random() * 3) + 1; // Le numéro de la photo concernée
-    if(score >= 10) {
-        showBomb(holeNumber);
-    }
-    const hole = holesElt[holeNumber]; // Le trou concerné
+    const hole = holesElt[randomHoleNumber]; // Le trou concerné
     const imgElt = document.createElement('img');
     imgElt.classList.add('dev');
     imgElt.src = `assets/devContent${devNumber}.png`; // L'image du dev concerné
     hole.appendChild(imgElt);
-
+    occupiedHoles.push(randomHoleNumber);   // Ajoute le trou occupé au tableau
+    if(score > 10) {
+        showBomb();
+    } 
+    if(score > 20) {
+        showBomb();
+    }
+    if(score > 30) {
+        showBomb();
+    }
+    
     imgElt.addEventListener('click', () => {
         imgElt.src = `assets/devEnerver${devNumber}.png`;
-        score += 1;
-        scoreElt.textContent = score;
+        increaseScore();
         soundSmashElt.play();   
     });
 
     setTimeout(() => {
         imgElt.classList.remove('dev');
         hole.removeChild(imgElt);
+        const index = occupiedHoles.indexOf(randomHoleNumber);
+        if (index > -1) {
+            occupiedHoles.splice(index, 1);
+        }
         showDev();
     }, 2000 - (score * 30));
 };
 
 /**
+ * Fonction pour redémarrer le jeu de zéro
+ */
+function restartGame() {
+    score = 0;
+    scoreElt.textContent = score;
+    error = 0;
+    occupiedHoles = [];
+    errorElt.innerHTML = '';
+    overlayElt.style.display = 'none';
+};
+
+/**
  * Fonction qui permet d'afficher une bombe aléatoire dans un trou aléatoire
  */
-function showBomb (number) {
-    let holeNumber = Math.floor(Math.random() * holesElt.length); // Le numéro du trou concerné
-
-    while(number == holeNumber) { // SI trou du dev actuel = trou de la bombe alors on boucle 
-        holeNumber = Math.floor(Math.random() * holesElt.length); 
-    }
-
-    const hole = holesElt[holeNumber]; // Le trou concerné
+function showBomb () {
+    let randomHoleNumber = getRandomHoleNumber(); // Le numéro du trou concerné
+    const hole = holesElt[randomHoleNumber]; // Le trou concerné
     const imgElt = document.createElement('img');
     imgElt.classList.add('bomb');
     imgElt.src = 'assets/bomb.webp';
     hole.appendChild(imgElt);
+    occupiedHoles.push(randomHoleNumber);   // Ajoute le trou occupé au tableau
 
     imgElt.addEventListener('click', () => {
-        soundExplosionElt.play();
-        overlayElt.style.display = 'block';  
+        overlayElt.style.display = 'block'; 
+        soundExplosionElt.play(); 
+        setTimeout(() => {
+            restartGame();
+        }, 3000)
     });
 
     setTimeout(() => {
         imgElt.classList.remove('bomb');
         hole.removeChild(imgElt);
-    }, 2000 - (score * 30));
-
-    if(score > 15) {
-        let secondHoleNumber = Math.floor(Math.random() * holesElt.length); // Le numéro du trou concerné
-        while(secondHoleNumber == number || secondHoleNumber == holeNumber) { // SI trou de la deuxième bombe = trou du dev actuel OU trou de la première bombe alors on boucle
-            secondHoleNumber = Math.floor(Math.random() * holesElt.length); 
+        const index = occupiedHoles.indexOf(randomHoleNumber);
+        if (index > -1) {
+            occupiedHoles.splice(index, 1);
         }
-        const secondHole = holesElt[secondHoleNumber]; // Le trou concerné
-        const secondImgElt = document.createElement('img');
-        secondImgElt.classList.add('bomb');
-        secondImgElt.src = 'assets/bomb.webp';
-        secondHole.appendChild(secondImgElt);
-    
-        secondImgElt.addEventListener('click', () => {
-            soundExplosionElt.play();
-            overlayElt.style.display = 'block';  
-        });
-    
-        setTimeout(() => {
-            secondImgElt.classList.remove('bomb');
-            secondHole.removeChild(secondImgElt);
-            soundExplosionElt.play();  
-        }, 2000 - (score * 30));
-    }
+    }, 2000 - (score * 30));
 }
 
 showDev();
