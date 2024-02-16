@@ -6,6 +6,7 @@
 
 body, html {
     height: 100%;
+    overflow: hidden;
 }
 
 body {
@@ -17,20 +18,56 @@ body {
     align-items: center;
 }
 
-.score {
-    font-size: 5rem;
+.full-screen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none; 
+    z-index: 1000;
+}
+
+.full-screen-overlay img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.score-error-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 1050px;
+    height: 50px;
+    position: relative;
+}
+
+.score-container {
+    left: 0;
+    font-size: 3rem;
+}
+
+.cross-container {
+    height: 100%;
+    right: 100px;
+}
+
+.cross-container img {
+    margin-top: 5px;
+    height: 40px;
+    margin-right: 10px;
 }
 
 .game-board {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    gap: 50px;
+    gap: 100px;
     height: 700px;
     width: 990px;
     background: linear-gradient(135deg, #e6efff, #f9eae1);
-    margin-top: 40px;
-    padding: 80px;
+    padding: 30px;
 }
 
 .mole-hole {
@@ -44,14 +81,23 @@ body {
 }
 
 .mole-hole .dev {
-    width: 70%;
+    width: 80%;
     height: 100%;
     position: absolute;
-    bottom: -7px;
-    left: 110px;
+    bottom: -6px;
+    left: 130px;
     transform: translate(-50%);
     animation: appear 0.3s ease-out;
-    
+}
+
+.mole-hole .bomb {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    bottom: -2px;
+    left: 170px;
+    transform: translate(-50%);
+    animation: appear 0.3s ease-out;
 }
 
 @keyframes appear {
@@ -74,6 +120,7 @@ body {
     transform: translate(-20%, 20%);
     transition: transform .1s;
     z-index: 999;
+    pointer-events: none;
 }
 
 .cursor-hammer.active {

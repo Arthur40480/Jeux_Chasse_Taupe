@@ -7,9 +7,15 @@
     <title>Chasse-Taupe</title>
 </head>
 <body>
+    <div class="full-screen-overlay">
+        <img src="assets/explosionImg.jpg" alt="Image d'explosion" />
+    </div>
     <h1 class="title">Chasse - Dev</h1>
-    <h2 class="score">Score : <span>00</span></h2>
-
+    <div class="score-error-container">
+        <h2 class="score-container">Score : <span>0</span></h2>
+        <div class="cross-container"></div>
+    </div>
+    
     <div class="cursor-hammer active"></div>
 
     <div class="game-board">
@@ -22,10 +28,11 @@
         <div class="mole-hole"></div>
         <div class="mole-hole"></div>
         <div class="mole-hole"></div>
-        <div class="mole-hole"></div>
-        <div class="mole-hole"></div>
-        <div class="mole-hole"></div>
     </div>
+
+    <audio class="sound-smash" src="assets/smash.mp3"></audio>
+    <audio class="sound-explosion" src="assets/explosion.mp3"></audio>
+    <audio class="background-music" src="assets/panic.mp3"></audio>
 
     <script src="main.js"></script>
 </body>
