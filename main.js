@@ -1,17 +1,20 @@
-const overlayElt = document.querySelector('.full-screen-overlay');           // Full screen
-const overlayImgElt = document.querySelector('.overlay-img');               // Image du full screen
-const gameBoardElt = document.querySelector('.game-board');                // Plateau de jeux
-const cursorHammerElt = document.querySelector('.cursor-hammer');         // Le marteau
-const holesElt = [...document.querySelectorAll('.mole-hole')];           // Les trous
-const soundSmashElt = document.querySelector('.sound-smash');           // Le son du smash
-const soundExplosionElt = document.querySelector('.sound-explosion'); // Le son de l'explosion
-const musicElt = document.querySelector('.background-music')         // Musique de fond
-const scoreElt = document.querySelector('.score-container span');   // Le score
-const errorElt = document.querySelector('.cross-container');       // Les erreurs
+const overlayElt = document.querySelector('.full-screen-overlay');                  // Full screen
+const overlayImgElt = document.querySelector('.overlay-img');                      // Image du full screen
+const soundButtonElt = document.querySelector('.sound-button');                   // Boutton du son
+const soundImgElt = document.querySelector('.sound-icon');                        // Icon du son
+const gameBoardElt = document.querySelector('.game-board');                     // Plateau de jeux
+const cursorHammerElt = document.querySelector('.cursor-hammer');              // Le marteau
+const holesElt = [...document.querySelectorAll('.mole-hole')];                // Les trous
+const soundSmashElt = document.querySelector('.sound-smash');                // Le son du smash
+const soundExplosionElt = document.querySelector('.sound-explosion');       // Le son de l'explosion
+const musicElt = document.querySelector('.background-music')               // Musique de fond
+const scoreElt = document.querySelector('.score-container span');         // Le score
+const errorElt = document.querySelector('.cross-container');             // Les erreurs
 
 let score = 0;
 let error = 0;
 let occupiedHoles = []; // Tableau des trous occupés
+let soundMuted = false; 
 
 // Evenements
 window.addEventListener('mousemove', e => {
@@ -46,6 +49,20 @@ document.addEventListener('click', (event) => {
         errorElt.appendChild(imgElt);
     }
 });
+
+soundButtonElt.addEventListener('click', toggleSound);
+
+function toggleSound() {
+    if(!soundMuted) {
+        soundMuted = true;
+        musicElt.volume = 0;
+        soundImgElt.src = 'assets/pas-de-son.png';
+    }else {
+        soundMuted = false;
+        musicElt.volume = 1;
+        soundImgElt.src = 'assets/monter-le-son.png';
+    }
+}
 
 /**
  * Fonction qui renvoie un numéro de trou aléatoire après avoir vérifié qu'il ne soit pas dans le tableau des trous occupés
